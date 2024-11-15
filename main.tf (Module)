@@ -1,0 +1,71 @@
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_application_gateway" "appgw" {
+  name                = var.appgw_name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku {
+    name     = var.sku_name
+    tier     = var.sku_tier
+    capacity = var.capacity
+  }
+  
+  gateway_ip_configuration {
+    name      = "appgw-ip-configuration"
+    subnet_id = var.subnet_id
+  }
+
+  frontend_port {
+    name = "httpPort"
+    port = 80
+  }
+
+  frontend_port {
+    name = "httpsPort"
+    port = 443
+  }
+
+  frontend_ip_configuration {
+    name                 = "appgw-public-ip-configuration"
+    public_ip_address_id = var.public_ip_address_id
+  }
+
+  ssl_certificate {
+    name     = "appgw-ssl-cert"
+    data     = var.ssl_certificate_data
+    password = var.ssl_certificate_password
+  }
+
+  backend_address_pool {
+    name = "appgw-backend-pool"
+    backend_addresses = var.backend_addresses
+  }
+
+  backend_http_settings {
+    name                  = "appgw-http-settings"
+    cookie_based_affinity = var.cookie_based_affinity
+    port                  = var.backend_http_port
+    protocol              = var.backend_protocol
+    request_timeout       = var.request_timeout
+  }
+
+  http_listener {
+    name                           = "appgw-http-listener"
+    frontend_ip_configuration_name = "appgw-public-ip-configuration"
+    frontend_port_name             = "httpsPort"
+    protocol                       = "Https"
+    ssl_certificate_name           = "appgw-ssl-cert"
+  }
+
+  request_routing_rule {
+    name                       = "appgw-routing-rule"
+    rule_type                  = "Basic"
+    http_listener_name         = "appgw-http-listener"
+    backend_address_pool_name  = "appgw-backend-pool"
+    backend_http_settings_name = "appgw-http-settings"
+  }
+
+  tags = var.tags
+}
