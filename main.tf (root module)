@@ -1,0 +1,22 @@
+# main.tf (root module)
+module "application_gateway" {
+  source                  = "./modules/application_gateway"
+  appgw_name              = "my-appgw"
+  resource_group_name     = "my-resource-group"
+  location                = "East US"
+  sku_name                = "Standard_v2"
+  sku_tier                = "Standard_v2"
+  capacity                = 2
+  subnet_id               = azurerm_subnet.appgw_subnet.id
+  public_ip_address_id    = azurerm_public_ip.appgw_public_ip.id
+  ssl_certificate_data    = filebase64("path/to/your/certificate.pfx")
+  ssl_certificate_password = "your_cert_password"
+  backend_addresses       = [{ ip_address = "10.0.1.4" }, { ip_address = "10.0.1.5" }]
+  backend_http_port       = 80
+  backend_protocol        = "Http"
+  request_timeout         = 20
+  tags                    = {
+    environment = "production"
+    application = "web-app"
+  }
+}
