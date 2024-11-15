@@ -1,0 +1,92 @@
+# variables.tf
+
+variable "appgw_name" {
+  description = "Name of the Application Gateway"
+  type        = string
+}
+
+variable "resource_group_name" {
+  description = "Resource group name where the Application Gateway will be created"
+  type        = string
+}
+
+variable "location" {
+  description = "Azure region where the Application Gateway will be deployed"
+  type        = string
+}
+
+variable "sku_name" {
+  description = "SKU Name for the Application Gateway"
+  type        = string
+  default     = "Standard_v2"
+}
+
+variable "sku_tier" {
+  description = "Tier for the Application Gateway"
+  type        = string
+  default     = "Standard_v2"
+}
+
+variable "capacity" {
+  description = "Capacity (instance count) of the Application Gateway"
+  type        = number
+  default     = 2
+}
+
+variable "subnet_id" {
+  description = "ID of the subnet where the Application Gateway will be deployed"
+  type        = string
+}
+
+variable "public_ip_address_id" {
+  description = "Public IP address ID for the Application Gateway frontend"
+  type        = string
+}
+
+variable "ssl_certificate_data" {
+  description = "Base-64 encoded SSL certificate data"
+  type        = string
+}
+
+variable "ssl_certificate_password" {
+  description = "Password for the SSL certificate"
+  type        = string
+  sensitive   = true
+}
+
+variable "backend_addresses" {
+  description = "List of backend addresses for the Application Gateway"
+  type        = list(object({
+    ip_address = string
+  }))
+}
+
+variable "cookie_based_affinity" {
+  description = "Enable or disable cookie-based affinity"
+  type        = string
+  default     = "Disabled"
+}
+
+variable "backend_http_port" {
+  description = "HTTP port for the backend pool"
+  type        = number
+  default     = 80
+}
+
+variable "backend_protocol" {
+  description = "Protocol used for the backend pool"
+  type        = string
+  default     = "Http"
+}
+
+variable "request_timeout" {
+  description = "Request timeout in seconds"
+  type        = number
+  default     = 20
+}
+
+variable "tags" {
+  description = "Tags to be applied to the Application Gateway"
+  type        = map(string)
+  default     = {}
+}
